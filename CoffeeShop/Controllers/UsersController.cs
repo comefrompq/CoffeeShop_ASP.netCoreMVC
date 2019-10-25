@@ -48,6 +48,7 @@ namespace CoffeeShop.Controllers
         }
 
         // GET: Users/Create
+        [Authorize(Roles ="admin")]
         public IActionResult Create()
         {
             ViewData["RoleId"] = new SelectList(_context.Roles, "Id", "Id");
@@ -72,6 +73,7 @@ namespace CoffeeShop.Controllers
         }
 
         // GET: Users/Edit/5
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -125,6 +127,7 @@ namespace CoffeeShop.Controllers
         }
 
         // GET: Users/Delete/5
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)

@@ -57,6 +57,18 @@ namespace CoffeeShop.Controllers
 
             return RedirectToAction("Login");
         }
+        [HttpPost]
+        public async Task<IActionResult> Register(RegisterViewModel form)
+        {
+            User user = new User 
+            { UserName = form.UserName
+            , Password = form.Password
+            , RoleId = 2
+            , FullName = form.UserName};
+            await _userRepository.Add(user);
+            return RedirectToAction("Login", "Account");
+        }
+
 
     }
 }

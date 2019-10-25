@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using CoffeeShop.Data;
 using CoffeeShop.Data.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CoffeeShop.Controllers
 {
@@ -20,6 +21,7 @@ namespace CoffeeShop.Controllers
         }
 
         // GET: Roles
+        [Authorize]
         public async Task<IActionResult> Index()
         {
             return View(await _context.Roles.ToListAsync());

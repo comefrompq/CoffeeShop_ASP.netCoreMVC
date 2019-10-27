@@ -12,6 +12,7 @@ namespace CoffeeShop.Data.Models
         public string Description { get; set; }
         public int Size { get; set; }
         public int CategoryId { get; set; }
+        public string ImgPath { get; set; }
         public virtual Category Category { get; set; }
         public virtual List<OrderItem> OrderItems { get; set; }
     }

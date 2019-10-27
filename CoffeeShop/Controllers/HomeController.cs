@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace CoffeeShop.Controllers
 {
-    [Authorize]
+
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -24,12 +24,7 @@ namespace CoffeeShop.Controllers
         {
             return View();
         }
-
-        public IActionResult Privacy()
-        {
-            return View();
-        }
-
+      
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

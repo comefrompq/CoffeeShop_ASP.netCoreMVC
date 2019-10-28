@@ -10,44 +10,44 @@ namespace CoffeeShop.Models.Repository
     public class SQLRoleRepository : IRoleRepository
     {
         private readonly CoffeeShopDbContext _context;
-
-        public SQLRoleRepository(CoffeeShopDbContext context)
+        public SQLRoleRepository(CoffeeShopDbContext dbContext)
         {
-            this._context = context;
+            _context = dbContext;
         }
-        public Role Add(Role role)
+        public async Task<bool> Add(Role role)
         {
-            _context.Roles.Add(role);
-            _context.SaveChanges();
-            return role;
+            _context.Add(role);
+            await _context.SaveChangesAsync();
+            return true;
         }
 
-        public Role Delete(int Id)
+        public async Task<bool> Delete(int id)
         {
-            Role role = _context.Roles.Find(Id);
-            if(role != null)
+            var role = await _context.Roles.FindAsync(id);
+            if (role != null)
             {
                 _context.Roles.Remove(role);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
+                return true;
             }
-            return role;
+            return false;
         }
 
-        public IEnumerable<Role> GetAllRole()
+        public async Task<Role> FindByIdAsync(int roleId)
+        {
+            return await _context.Roles.FindAsync(roleId);
+        }
+
+        public async Task<IEnumerable<Role>> GetAll()
         {
             return _context.Roles;
         }
 
-        public Role GetRole(int Id)
+        public async Task<bool> Update(Role roleChanges)
         {
-            return _context.Roles.Find(Id);
-        }
-
-        public Role Update(Role roleChanges)
-        {
-            var role = _context.Roles.Attach(roleChanges);
-            role.State = Microsoft.EntityFrameworkCore.EntityState.Modified;
-            return roleChanges;
+            _context.Roles.Update(roleChanges);
+            await _context.SaveChangesAsync();
+            return true;
         }
     }
 }

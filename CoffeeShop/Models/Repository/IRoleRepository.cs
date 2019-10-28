@@ -8,10 +8,10 @@ namespace CoffeeShop.Models.Repository
 {
     interface IRoleRepository
     {
-        Role GetRole(int Id);
-        IEnumerable<Role> GetAllRole();
-        Role Add(Role role);
-        Role Update(Role roleChanges);
-        Role Delete(int Id);
+        Task<bool> Add(Role role);
+        Task<bool> Delete(int id);
+        Task<bool> Update(Role roleChanges);
+        Task<Role> FindByIdAsync(int roleId);
+        Task<IEnumerable<Role>> GetAll();
     }
 }

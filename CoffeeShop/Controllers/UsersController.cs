@@ -48,7 +48,7 @@ namespace CoffeeShop.Controllers
         }
 
         // GET: Users/Create
-        [Authorize(Roles ="admin")]
+        [Authorize]
         public IActionResult Create()
         {
             ViewData["RoleId"] = new SelectList(_context.Roles, "Id", "Id");
@@ -72,62 +72,9 @@ namespace CoffeeShop.Controllers
             return View(user);
         }
 
-        // GET: Users/Edit/5
-        [Authorize(Roles = "admin")]
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var user = await _context.Users.FindAsync(id);
-            if (user == null)
-            {
-                return NotFound();
-            }
-            ViewData["RoleId"] = new SelectList(_context.Roles, "Id", "Id", user.RoleId);
-            return View(user);
-        }
-
-        // POST: Users/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,FullName,UserName,Password,PhoneNumber,RoleId")] User user)
-        {
-            if (id != user.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(user);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!UserExists(user.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["RoleId"] = new SelectList(_context.Roles, "Id", "Id", user.RoleId);
-            return View(user);
-        }
-
+        
         // GET: Users/Delete/5
-        [Authorize(Roles = "admin")]
+        [Authorize]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)

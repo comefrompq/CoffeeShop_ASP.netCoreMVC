@@ -31,7 +31,12 @@ namespace CoffeeShop.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel form)
         {
-            var res = await _userRepository.CanSignin(form.UserName, form.Password);
+            User user = new User
+            {
+                UserName = form.UserName,
+                Password = form.Password
+            };
+            var res = await _userRepository.CanSignIn(user);
             if(res == null)
             {
                 return View();
@@ -63,7 +68,6 @@ namespace CoffeeShop.Controllers
             User user = new User 
             { UserName = form.UserName
             , Password = form.Password
-            , RoleId = 2
             , FullName = form.UserName};
             await _userRepository.Add(user);
             return RedirectToAction("Login", "Account");

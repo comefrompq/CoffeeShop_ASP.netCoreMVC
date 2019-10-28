@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 using CoffeeShop.Data;
 using CoffeeShop.Data.Models;
@@ -11,57 +13,69 @@ namespace CoffeeShop.Models.Repository
     public class SQLUserRepository : IUserRepository
     {
         private readonly CoffeeShopDbContext _context;
-
-        public SQLUserRepository(CoffeeShopDbContext context)
+        public SQLUserRepository(CoffeeShopDbContext dbContext)
         {
-            this._context = context;
+            _context = dbContext;
         }
-        public async Task<User> Add(User user)
+        public static string MD5Hash(string input)
         {
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
-            return user;
-        }
-
-        public async Task<User> CanSignin(string user, string password)
-        {
-            User res = await _context.Users.Include(r => r.Role).Where(x => x.UserName == user).FirstOrDefaultAsync();
-            
-            if(res != null)
+            using (var md5 = MD5.Create())
             {
-                if(res.Password == password)
-                    return res;
+                var result = md5.ComputeHash(Encoding.ASCII.GetBytes(input));
+                return Encoding.ASCII.GetString(result);
             }
+        }
+        public async Task<bool> Add(User user)
+        {
+            var role = _context.Roles.Where(r => r.Name == "user").FirstOrDefault();
+            user.Role = role;
+
+            var res = _context.Users.Where(x => x.UserName == user.UserName).FirstOrDefault();
+
+            if (res == null && user.Password != null)
+            {
+                user.Password = MD5Hash(user.Password);
+                _context.Users.Add(user);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            return false;
+        }
+
+        public async Task<bool> Delete(int id)
+        {
+            var user = await _context.Users.FindAsync(id);
+            if (user != null)
+            {
+                _context.Users.Remove(user);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            return false;
+        }
+
+        public async Task<User> FindByIdAsync(int userId)
+        {
+            return await _context.Users.Include(x => x.Role).FirstOrDefaultAsync(x => x.Id == userId);
+        }
+        public async Task<User> CanSignIn(User user)
+        {
+            var res = _context.Users.Include(x => x.Role).Where(x => x.UserName == user.UserName).FirstOrDefault();
+            if (res != null && MD5Hash(user.Password) == res.Password) return res;
             return null;
         }
 
-        public async Task<User> Delete(int Id)
+        public async Task<IEnumerable<User>> GetAll()
         {
-            User user = _context.Users.Find(Id);
-            if(user != null)
-            {
-                _context.Users.Remove(user);
-                _context.SaveChanges();
-            }
-            return user;
+            return await _context.Users.Include(x => x.Role).ToListAsync();
         }
 
-        public async Task<IEnumerable<User>> GetAllUser()
+        public async Task<bool> Update(User user)
         {
-            return _context.Users;
-        }
-
-        public async Task<User> GetUser(int Id)
-        {
-            return _context.Users.Find(Id);           
-        }
-
-        public async Task<User> Update(User userChanges)
-        {
-            var user = _context.Users.Attach(userChanges);
-            user.State = Microsoft.EntityFrameworkCore.EntityState.Modified;
-            _context.SaveChanges();
-            return userChanges;
+            user.Password = MD5Hash(user.Password);
+            _context.Update(user);
+            await _context.SaveChangesAsync();
+            return true;
         }
     }
 }

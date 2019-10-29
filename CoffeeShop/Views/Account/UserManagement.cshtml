@@ -1,0 +1,84 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model CoffeeShop.Models.AccountViewModels.ManagementViewModel
+@{
+    ViewData["Title"] = "User Management";
+}
+<section class="ftco-menu p-0">
+    <div class="container">
+        <div class="row d-md-flex">
+            <div class="col-lg-12 ftco-animate p-md-5">
+                <div class="row">
+                    <div class="col-md-12 nav-link-wrap mb-5">
+                        <div class="nav ftco-animate nav-pills justify-content-center" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                            <a class="nav-link active" asp-action="UserManagement" asp-controller="Account">Users</a>
+                            <a class="nav-link " asp-action="CategoryManagement" asp-controller="Account">Categories</a>
+                            <a class="nav-link " asp-action="ProductManagement" asp-controller="Account">Products</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<div class="container">
+    <p>
+        <a class="btn btn-primary" asp-action="Create" asp-controller="Users">Add New</a>
+    </p>
+    <table class="table" style="color:aliceblue">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.users.FirstOrDefault().Id)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.users.FirstOrDefault().FullName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.users.FirstOrDefault().UserName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.users.FirstOrDefault().Password)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.users.FirstOrDefault().PhoneNumber)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.users.FirstOrDefault().RoleId)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.users)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Id)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FullName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.UserName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Password)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PhoneNumber)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Role.Id)
+                    </td>
+                    <td>
+                        <a class="btn btn-primary" asp-controller="Users" asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                        <a class="btn btn-primary" asp-controller="Users" asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                        <a class="btn btn-primary" asp-controller="Users" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

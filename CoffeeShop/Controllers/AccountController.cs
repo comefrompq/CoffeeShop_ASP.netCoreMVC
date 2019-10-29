@@ -8,6 +8,7 @@ using CoffeeShop.Models.AccountViewModels;
 using CoffeeShop.Models.Repository;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CoffeeShop.Controllers
@@ -15,10 +16,14 @@ namespace CoffeeShop.Controllers
     public class AccountController : Controller
     {
         private readonly IUserRepository _userRepository;
+        private readonly ICategoryRepository _categoryRepository;
+        private readonly IProductRepository _productRepository;
 
-        public AccountController(IUserRepository userRepository)
+        public AccountController(IUserRepository userRepository, ICategoryRepository categoryRepository, IProductRepository productRepository)
         {
             _userRepository = userRepository;
+            _categoryRepository = categoryRepository;
+            _productRepository = productRepository;
         }
         public async Task<IActionResult> Login()
         {
@@ -52,7 +57,11 @@ namespace CoffeeShop.Controllers
             ClaimsPrincipal principal = new ClaimsPrincipal(identity);
 
             await HttpContext.SignInAsync(principal);
-            return RedirectToAction("Index", "Users");
+            if(res.Role.Name == "admin")
+            {
+                return RedirectToAction("UserManagement", "Account");
+            }
+            return RedirectToAction("Index", "Menu");
 
         }
         public async Task<IActionResult> Logout(string requestPath)
@@ -72,7 +81,32 @@ namespace CoffeeShop.Controllers
             await _userRepository.Add(user);
             return RedirectToAction("Login", "Account");
         }
-
-
+        [Authorize(Roles ="admin")]
+        public async Task<IActionResult> UserManagement()
+        {
+            var model = new ManagementViewModel
+            {
+                users = await _userRepository.GetAll(),
+            };
+            return  View(model);
+        }
+        [Authorize(Roles = "admin")]
+        public async Task<IActionResult> CategoryManagement()
+        {
+            var model = new ManagementViewModel
+            {
+                categories = await _categoryRepository.GetAll()
+            };
+            return View(model);
+        }
+        [Authorize(Roles = "admin")]
+        public async Task<IActionResult> ProductManagement()
+        {
+            var model = new ManagementViewModel
+            {
+                products = await _productRepository.GetAll()
+            };
+            return View(model);
+        }
     }
 }

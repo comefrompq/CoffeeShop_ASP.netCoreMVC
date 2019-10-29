@@ -11,17 +11,40 @@ namespace CoffeeShop.Controllers
 {
     public class MenuController : Controller
     {
-        private readonly SQLCategoryRepository _categoryRepository;
-        private readonly SQLProductRepository _productRepository;
+        private ICategoryRepository _categoryRepository;
+        private IProductRepository _productRepository;
 
-        public MenuController(SQLCategoryRepository categoryRepository, SQLProductRepository productRepository)
+        public MenuController(ICategoryRepository categoryRepository, IProductRepository productRepository)
         {
             _categoryRepository = categoryRepository;
             _productRepository = productRepository;
         }
         public async Task<IActionResult> Index()
         {
-            return View();
+            var model = new MenuViewModel
+            {
+                categories = await _categoryRepository.GetAll(),
+                products = (await _categoryRepository.FindByIdAsync(1)).Products
+            };
+            return View(model);
+        }
+        public async Task<IActionResult> ProductList(int id)
+        {
+            var model = new MenuViewModel
+            {
+                categories = await _categoryRepository.GetAll(),
+                products = (await _categoryRepository.FindByIdAsync(id)).Products
+            };
+            return View("Index",model);
+        }
+        [HttpGet]
+        public async Task<IActionResult> ProductDetails(int id)
+        {
+            var model = new ProductDetailViewModel
+            {
+                product = await _productRepository.FindByIdAsync(id)
+            };
+            return View(model);
         }
     }
 }

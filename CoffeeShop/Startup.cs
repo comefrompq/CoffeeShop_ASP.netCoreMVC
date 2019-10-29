@@ -33,6 +33,8 @@ namespace CoffeeShop
             .UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddScoped<IUserRepository, SQLUserRepository>();
             services.AddScoped<IRoleRepository, SQLRoleRepository>();
+            services.AddScoped<ICategoryRepository, SQLCategoryRepository>();
+            services.AddScoped<IProductRepository, SQLProductRepository>();
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
             .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme,options =>
             {               

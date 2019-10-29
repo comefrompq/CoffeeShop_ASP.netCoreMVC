@@ -1,4 +1,9 @@
-﻿<!DOCTYPE html>
+﻿@{ 
+    var controllerName = this.ViewContext.RouteData.Values["controller"].ToString();
+    var userId = Context.User.FindFirst(User.Identity.Name)?.Value;
+}
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -10,6 +15,7 @@
     <link href="https://fonts.googleapis.com/css?family=Great+Vibes" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.linearicons.com/free/1.0.0/icon-font.min.css">
 
+    <link rel="stylesheet" href="css/open-iconic-bootstrap.min.css">
     <link rel="stylesheet" href="~/css/animate.css">
 
     <link rel="stylesheet" href="~/css/owl.carousel.min.css">
@@ -37,29 +43,29 @@
     <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
         <div class="container">
             <a class="navbar-brand" href="index.html">Coffee<small>Blend</small></a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="lnr lnr-menu"></span> Menu
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="true" aria-label="Toggle navigation">
+                <span class="oi oi-menu"></span>
             </button>
             <div class="collapse navbar-collapse" id="ftco-nav">
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item"><a class="nav-link">Home</a></li>
-                    <li class="nav-item"><a class="nav-link">Menu</a></li>
-                    <li class="nav-item cart"><a class="nav-link"><span class="lnr lnr-cart col-3"></span><span class="bag d-flex justify-content-center align-items-center"><small>1</small></span></a></li>
+                    <li class="nav-item"><a class="nav-link" asp-action="Index" asp-controller="Menu">Menu</a></li>
+                    <li class="nav-item cart"><a class="nav-link"><span class="icon icon-shopping_cart"></span><span class="bag d-flex justify-content-center align-items-center"><small>1</small></span></a></li>
                     @if (User.Identity.IsAuthenticated)
                     {
                         @if (User.IsInRole("admin"))
                         {
                             <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="Users" asp-action="Index">@User.Identity.Name</a>
+                                <a class="nav-link" asp-area="" asp-action="Details" asp-controller="Users" asp-route-id="@userId">@User.Identity.Name</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="Users" asp-action="Index">Management</a>
+                                <a class="nav-link" asp-area="" asp-controller="Account" asp-action="UserManagement">Management</a>
                             </li>
                         }
                         else
                         {
                             <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="" asp-action="">@User.Identity.Name</a>
+                                <a class="nav-link" asp-area=""  asp-action="Details" asp-controller="Users" asp-route-id="@userId">@User.Identity.Name</a>
                             </li>
                         }
 
@@ -80,8 +86,17 @@
                 </ul>
             </div>
         </div>
-    </nav>   
-    @RenderBody()    
+    </nav>
+    @if (controllerName == "Home")
+    {
+        @RenderBody()
+    }
+    else
+    {
+        <div class="container">
+            @RenderBody()
+        </div>
+    }
     <footer class="ftco-footer ftco-section img">
         <div class="overlay"></div>
         <div class="container">
@@ -104,8 +119,6 @@
             </div>
         </div>
     </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/js/jquery.min.js"></script>
     <script src="~/js/jquery-migrate-3.0.1.min.js"></script>

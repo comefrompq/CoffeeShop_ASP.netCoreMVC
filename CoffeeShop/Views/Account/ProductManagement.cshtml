@@ -1,0 +1,75 @@
+﻿@model  CoffeeShop.Models.AccountViewModels.ManagementViewModel
+@{
+    ViewData["Title"] = "Product Management";
+}
+
+<section class="ftco-menu p-0">
+    <div class="container">
+        <div class="row d-md-flex">
+            <div class="col-lg-12 ftco-animate p-md-5">
+                <div class="row">
+                    <div class="col-md-12 nav-link-wrap mb-5">
+                        <div class="nav ftco-animate nav-pills justify-content-center" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                            <a class="nav-link " asp-action="UserManagement" asp-controller="Account">Users</a>
+                            <a class="nav-link " asp-action="CategoryManagement" asp-controller="Account">Categories</a>
+                            <a class="nav-link active" asp-action="ProductManagement" asp-controller="Account">Products</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<div class="container">
+    <p>
+        <a class="btn btn-primary" asp-action="" asp-controller="">Add New</a>
+    </p>
+    <table class="table" style="color:aliceblue">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.products.FirstOrDefault().Id)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.products.FirstOrDefault().Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.products.FirstOrDefault().Description)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.products.FirstOrDefault().Price)
+                </th>                
+                <th>
+                    Image
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.products)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Id)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Description)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Price)
+                    </td>                    
+                    <td>
+                        <img src="@item.ImgPath" style="width: 150px; height:150px" />
+                    </td>
+                    <td>
+                        <a class="btn btn-primary" asp-controller="" asp-action="" asp-route-id="@item.Id">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
